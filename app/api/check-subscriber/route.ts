@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     // Check if email exists in subscribers table
     const { data, error } = await supabase
       .from("subscribers")
-      .select("id")
+      .select("id, verified")
       .eq("email", normalizedEmail)
       .limit(1)
 
@@ -53,14 +53,29 @@ export async function POST(request: NextRequest) {
     }
 
     if (data && data.length > 0) {
+      if (data[0].verified) {
+        // Already verified: instant unlock
+        return NextResponse.json({ status: "subscribed" })
+      }
+
+      // Email exists but not verified yet: user is coming back after confirming on Substack
+      // Mark as verified and unlock
+      await supabase
+        .from("subscribers")
+        .update({ verified: true })
+        .eq("email", normalizedEmail)
+
       return NextResponse.json({ status: "subscribed" })
     }
 
-    // New subscriber: add to database + subscribe to Substack
+    // Brand new email: save to DB + subscribe to Substack
     const [insertResult, substackResult] = await Promise.all([
       supabase
         .from("subscribers")
-        .upsert({ email: normalizedEmail, source: "ai_index" }, { onConflict: "email" }),
+        .upsert(
+          { email: normalizedEmail, source: "ai_index", verified: false },
+          { onConflict: "email" }
+        ),
       subscribeToSubstack(normalizedEmail),
     ])
 
@@ -70,7 +85,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({
-      status: "new_subscriber",
+      status: "verification_pending",
       substackSubscribed: substackResult,
     })
   } catch (error) {
