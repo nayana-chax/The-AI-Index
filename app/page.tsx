@@ -153,6 +153,8 @@ export default function AIIndex() {
   const [expandedTool, setExpandedTool] = useState<string | null>(null)
   const [email, setEmail] = useState("")
   const [ctaEmail, setCtaEmail] = useState("")
+  const [gateLoading, setGateLoading] = useState(false)
+  const [gateMessage, setGateMessage] = useState("")
 
   useEffect(() => {
     // Check for magic link unlock
@@ -191,14 +193,41 @@ export default function AIIndex() {
     document.getElementById("database")?.scrollIntoView({ behavior: "smooth" })
   }
 
+  const handleSubscriberCheck = async (emailToCheck: string) => {
+    setGateLoading(true)
+    setGateMessage("")
+    try {
+      const res = await fetch("/api/check-subscriber", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: emailToCheck }),
+      })
+      const data = await res.json()
+      if (data.status === "subscribed") {
+        setIsUnlocked(true)
+        document.cookie = "ai_index_unlocked=true; max-age=31536000; path=/"
+        setGateMessage("Welcome back! Full index unlocked.")
+      } else if (data.status === "verification_sent") {
+        setGateMessage("Check your email to unlock the full index.")
+        window.open(`https://innercirclesignal.substack.com/?utm_campaign=ai_index_gate&email=${encodeURIComponent(emailToCheck)}`, "_blank")
+      } else {
+        setGateMessage("Something went wrong. Please try again.")
+      }
+    } catch {
+      setGateMessage("Something went wrong. Please try again.")
+    } finally {
+      setGateLoading(false)
+    }
+  }
+
   const handleGateSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    window.open(`https://innercirclesignal.substack.com/?utm_campaign=ai_index_gate&email=${encodeURIComponent(email)}`, "_blank")
+    handleSubscriberCheck(email)
   }
 
   const handleCtaSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    window.open(`https://innercirclesignal.substack.com/?utm_campaign=ai_index_cta&email=${encodeURIComponent(ctaEmail)}`, "_blank")
+    handleSubscriberCheck(ctaEmail)
   }
 
   return (
@@ -707,20 +736,26 @@ export default function AIIndex() {
                     <p className="text-muted-foreground">Subscribe to The Signal (free) and unlock the full AI Index.</p>
                   </div>
                   
-                  <form onSubmit={handleGateSubmit} className="flex flex-col sm:flex-row gap-3 min-w-0 lg:min-w-[400px]">
-                    <Input 
-                      type="email"
-                      placeholder="Enter your email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      className="flex-1 bg-input border-border h-12 font-mono"
-                    />
-                    <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold h-12 px-6 whitespace-nowrap">
-                      Unlock All
-                      <ChevronRight className="w-4 h-4 ml-1" />
-                    </Button>
-                  </form>
+                  <div className="min-w-0 lg:min-w-[400px]">
+                    <form onSubmit={handleGateSubmit} className="flex flex-col sm:flex-row gap-3">
+                      <Input
+                        type="email"
+                        placeholder="Enter your email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        disabled={gateLoading}
+                        className="flex-1 bg-input border-border h-12 font-mono"
+                      />
+                      <Button type="submit" disabled={gateLoading} className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold h-12 px-6 whitespace-nowrap">
+                        {gateLoading ? "Checking..." : "Unlock All"}
+                        {!gateLoading && <ChevronRight className="w-4 h-4 ml-1" />}
+                      </Button>
+                    </form>
+                    {gateMessage && (
+                      <p className="mt-3 text-sm font-mono text-primary">{gateMessage}</p>
+                    )}
+                  </div>
                 </div>
               </motion.div>
             )}
@@ -795,27 +830,32 @@ export default function AIIndex() {
             ))}
           </div>
 
-          <motion.form 
-            onSubmit={handleCtaSubmit} 
-            className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
+          <motion.div
+            className="max-w-md mx-auto"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.4, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
-            <Input 
-              type="email"
-              placeholder="Enter your email"
-              value={ctaEmail}
-              onChange={(e) => setCtaEmail(e.target.value)}
-              required
-              className="flex-1 bg-input border-border h-12 font-mono"
-            />
-            <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold h-12 px-8">
-              Subscribe Free
-              <ChevronRight className="w-4 h-4 ml-1" />
-            </Button>
-          </motion.form>
+            <form onSubmit={handleCtaSubmit} className="flex flex-col sm:flex-row gap-3">
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                value={ctaEmail}
+                onChange={(e) => setCtaEmail(e.target.value)}
+                required
+                disabled={gateLoading}
+                className="flex-1 bg-input border-border h-12 font-mono"
+              />
+              <Button type="submit" disabled={gateLoading} className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold h-12 px-8">
+                {gateLoading ? "Checking..." : "Subscribe Free"}
+                {!gateLoading && <ChevronRight className="w-4 h-4 ml-1" />}
+              </Button>
+            </form>
+            {gateMessage && (
+              <p className="mt-3 text-sm font-mono text-primary text-center">{gateMessage}</p>
+            )}
+          </motion.div>
         </motion.div>
       </section>
 
