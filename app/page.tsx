@@ -383,9 +383,9 @@ export default function AIIndex() {
                   asChild
                   className="border-border hover:bg-secondary hover:border-primary/50 font-semibold px-8 transition-all duration-300"
                 >
-                  <a href="https://innercirclesignal.substack.com" target="_blank" rel="noopener noreferrer">
+                  <a href="#gate" onClick={(e) => { e.preventDefault(); document.getElementById("gate")?.scrollIntoView({ behavior: "smooth" }) }}>
                     Unlock Full Access
-                    <ExternalLink className="w-4 h-4 ml-2" />
+                    <ChevronRight className="w-4 h-4 ml-2" />
                   </a>
                 </Button>
               </motion.div>
@@ -704,9 +704,10 @@ export default function AIIndex() {
           </div>
 
           {/* Gate banner */}
+          <div id="gate" />
           <AnimatePresence>
             {!isUnlocked && lockedCount > 0 && (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 30, scale: 0.95, filter: "blur(10px)" }}
                 animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
                 exit={{ opacity: 0, y: -20, scale: 0.95, filter: "blur(10px)" }}
