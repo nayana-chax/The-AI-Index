@@ -84,19 +84,6 @@ function getPricingTier(pricing: string): string {
   return "Paid"
 }
 
-function SignalLogo({ className = "" }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="0" y="0" width="12" height="12" fill="currentColor" opacity="0.3"/>
-      <rect x="14" y="0" width="6" height="6" fill="currentColor" opacity="0.5"/>
-      <rect x="22" y="0" width="10" height="10" fill="currentColor" opacity="0.3"/>
-      <circle cx="16" cy="16" r="8" fill="currentColor" opacity="0.2"/>
-      <circle cx="16" cy="16" r="3" fill="#ef4444"/>
-      <rect x="0" y="20" width="8" height="8" fill="currentColor" opacity="0.4"/>
-      <rect x="24" y="22" width="8" height="10" fill="currentColor" opacity="0.3"/>
-    </svg>
-  )
-}
 
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -238,7 +225,7 @@ export default function AIIndex() {
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              <SignalLogo className="w-5 h-5" />
+
               <span className="hidden sm:inline">The Signal</span>
             </a>
             <ThemeToggle />
@@ -410,7 +397,7 @@ export default function AIIndex() {
       <div className="bg-secondary/50 border-y border-border py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <SignalLogo className="w-6 h-6 text-foreground" />
+
             <span className="text-sm text-muted-foreground">
               Curated by <span className="text-foreground font-medium">The Signal</span>, Inner Circle&apos;s weekly AI newsletter
             </span>
@@ -837,7 +824,7 @@ export default function AIIndex() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <SignalLogo className="w-6 h-6 text-foreground" />
+  
               <span className="font-[family-name:var(--font-display)] font-bold">The AI Index</span>
             </div>
             <p className="text-sm text-muted-foreground text-center sm:text-right">
