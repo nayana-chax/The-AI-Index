@@ -703,71 +703,11 @@ export default function AIIndex() {
             ))}
           </div>
 
-          {/* Gate banner */}
-          <div id="gate" />
-          <AnimatePresence>
-            {!isUnlocked && lockedCount > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 30, scale: 0.95, filter: "blur(10px)" }}
-                animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
-                exit={{ opacity: 0, y: -20, scale: 0.95, filter: "blur(10px)" }}
-                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                className="mt-6 border border-primary/30 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 rounded-lg p-6 sm:p-8 relative overflow-hidden"
-              >
-                {/* Animated border glow */}
-                <motion.div 
-                  className="absolute inset-0 rounded-lg"
-                  style={{ 
-                    background: "linear-gradient(90deg, transparent, oklch(0.75 0.15 175 / 0.2), transparent)",
-                    backgroundSize: "200% 100%"
-                  }}
-                  animate={{ backgroundPosition: ["200% 0", "-200% 0"] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                />
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-                  <div>
-                    <motion.div 
-                      className="flex items-center gap-2 mb-2"
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.2, duration: 0.3 }}
-                    >
-                      <Lock className="w-5 h-5 text-primary" />
-                      <span className="font-mono text-sm font-bold text-primary">{lockedCount} more tools locked</span>
-                    </motion.div>
-                    <p className="text-lg font-semibold text-foreground mb-1">You&apos;ve seen 150. Unlock the rest.</p>
-                    <p className="text-muted-foreground">Subscribe to The Signal (free) and unlock the full AI Index.</p>
-                  </div>
-                  
-                  <div className="min-w-0 lg:min-w-[400px]">
-                    <form onSubmit={handleGateSubmit} className="flex flex-col sm:flex-row gap-3">
-                      <Input
-                        type="email"
-                        placeholder="Enter your email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        disabled={gateLoading}
-                        className="flex-1 bg-input border-border h-12 font-mono"
-                      />
-                      <Button type="submit" disabled={gateLoading} className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold h-12 px-6 whitespace-nowrap">
-                        {gateLoading ? "Checking..." : "Unlock All"}
-                        {!gateLoading && <ChevronRight className="w-4 h-4 ml-1" />}
-                      </Button>
-                    </form>
-                    {gateMessage && (
-                      <p className="mt-3 text-sm font-mono text-primary">{gateMessage}</p>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
       </section>
 
       {/* Subscribe CTA Section */}
-      <section className="py-16 sm:py-24 bg-secondary/30 border-y border-border overflow-hidden relative">
+      <section id="gate" className="py-16 sm:py-24 bg-secondary/30 border-y border-border overflow-hidden relative">
         {/* Ambient glow */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-primary/5 dark:bg-primary/10 rounded-full blur-3xl" />
@@ -851,7 +791,7 @@ export default function AIIndex() {
                 className="flex-1 bg-input border-border h-12 font-mono"
               />
               <Button type="submit" disabled={gateLoading} className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold h-12 px-8">
-                {gateLoading ? "Checking..." : "Subscribe Free"}
+                {gateLoading ? "Checking..." : "Unlock All"}
                 {!gateLoading && <ChevronRight className="w-4 h-4 ml-1" />}
               </Button>
             </form>
