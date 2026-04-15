@@ -324,7 +324,7 @@ export default function AIIndex() {
               variants={fadeInUp}
               transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             >
-              Every AI tool worth knowing — categorised, rated, and curated. Free to browse the top 150. Subscribe to unlock the full database.
+              Every AI tool worth knowing, categorised, rated, and curated. Free to browse the top 150. Subscribe to unlock the full database.
             </motion.p>
 
             <motion.div 
@@ -412,7 +412,7 @@ export default function AIIndex() {
           <div className="flex items-center gap-3">
             <SignalLogo className="w-6 h-6 text-foreground" />
             <span className="text-sm text-muted-foreground">
-              Curated by <span className="text-foreground font-medium">The Signal</span> — Inner Circle&apos;s weekly AI newsletter
+              Curated by <span className="text-foreground font-medium">The Signal</span>, Inner Circle&apos;s weekly AI newsletter
             </span>
           </div>
           <a 
@@ -529,7 +529,7 @@ export default function AIIndex() {
             <AnimatePresence mode="popLayout">
               {visibleTools.map((tool, index) => (
                 <motion.div
-                  key={tool.name}
+                  key={`${tool.name}-${tool.category}`}
                   layout
                   initial={{ opacity: 0, y: 15, filter: "blur(4px)" }}
                   animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -542,7 +542,7 @@ export default function AIIndex() {
                   className="border-b border-border"
                 >
                   <div
-                    onClick={() => setExpandedTool(expandedTool === tool.name ? null : tool.name)}
+                    onClick={() => setExpandedTool(expandedTool === `${tool.name}-${tool.category}` ? null : `${tool.name}-${tool.category}`)}
                     className="grid grid-cols-1 md:grid-cols-[3rem_1fr_2fr_6rem_5rem_8rem] gap-2 md:gap-4 px-4 py-4 transition-colors cursor-pointer hover:bg-secondary/30"
                   >
                     <span className="hidden md:block font-mono text-sm text-muted-foreground">{String(index + 1).padStart(2, '0')}</span>
@@ -588,7 +588,7 @@ export default function AIIndex() {
                     </div>
                   </div>
                   <AnimatePresence>
-                    {expandedTool === tool.name && (
+                    {expandedTool === `${tool.name}-${tool.category}` && (
                       <motion.div
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}
@@ -632,9 +632,9 @@ export default function AIIndex() {
 
             {/* Unlocked additional tools */}
             {isUnlocked && lockedTools.map((tool, index) => (
-              <div key={tool.name} className="border-b border-border">
+              <div key={`${tool.name}-${tool.category}`} className="border-b border-border">
                 <div
-                  onClick={() => setExpandedTool(expandedTool === tool.name ? null : tool.name)}
+                  onClick={() => setExpandedTool(expandedTool === `${tool.name}-${tool.category}` ? null : `${tool.name}-${tool.category}`)}
                   className="grid grid-cols-1 md:grid-cols-[3rem_1fr_2fr_6rem_5rem_8rem] gap-2 md:gap-4 px-4 py-4 hover:bg-secondary/30 transition-colors cursor-pointer"
                 >
                   <span className="hidden md:block font-mono text-sm text-muted-foreground">{String(151 + index).padStart(2, '0')}</span>
@@ -665,7 +665,7 @@ export default function AIIndex() {
                   </div>
                 </div>
                 <AnimatePresence>
-                  {expandedTool === tool.name && (
+                  {expandedTool === `${tool.name}-${tool.category}` && (
                     <motion.div
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
@@ -717,7 +717,7 @@ export default function AIIndex() {
                       <span className="font-mono text-sm font-bold text-primary">{lockedCount} more tools locked</span>
                     </motion.div>
                     <p className="text-lg font-semibold text-foreground mb-1">You&apos;ve seen 150. Unlock the rest.</p>
-                    <p className="text-muted-foreground">Subscribe to The Signal — free — and unlock the full AI Index.</p>
+                    <p className="text-muted-foreground">Subscribe to The Signal (free) and unlock the full AI Index.</p>
                   </div>
                   
                   <form onSubmit={handleGateSubmit} className="flex flex-col sm:flex-row gap-3 min-w-0 lg:min-w-[400px]">
@@ -770,7 +770,7 @@ export default function AIIndex() {
           </h2>
           
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-            The Signal is Inner Circle&apos;s weekly AI newsletter. Subscribe free and unlock the complete AI Index — every tool, every rating, every IC Pick.
+            The Signal is Inner Circle&apos;s weekly AI newsletter. Subscribe free and unlock the complete AI Index: every tool, every rating, every IC Pick.
           </p>
 
           {/* Perks */}
@@ -778,7 +778,7 @@ export default function AIIndex() {
             {[
               "Full access to all 5000+ tools",
               "Weekly AI newsletter, no fluff",
-              "IC Picks — tools we actually use",
+              "IC Picks: tools we actually use",
               "Early access to events and community"
             ].map((perk, i) => (
               <motion.div 

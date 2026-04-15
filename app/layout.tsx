@@ -20,8 +20,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'The AI Index — 5000+ AI Tools in One Place',
-  description: 'Every AI tool worth knowing — categorised, rated, and curated. Free to browse the top 150. Subscribe to unlock the full database.',
+  title: 'The AI Index | 5000+ AI Tools in One Place',
+  description: 'Every AI tool worth knowing, categorised, rated, and curated. Free to browse the top 150. Subscribe to unlock the full database.',
   generator: 'v0.app',
   icons: {
     icon: [
