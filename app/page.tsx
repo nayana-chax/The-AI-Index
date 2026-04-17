@@ -207,8 +207,9 @@ export default function AIIndex() {
         setIsUnlocked(true)
         document.cookie = "ai_index_unlocked=true; max-age=31536000; path=/"
         setGateMessage("Welcome back! Full index unlocked.")
-      } else if (data.status === "verification_pending") {
-        setGateMessage("Check your inbox and confirm your subscription to The Signal. Then come back and click Unlock again.")
+      } else if (data.status === "needs_substack") {
+        setGateMessage("Subscribe to The Signal in the tab that just opened. Then come back and enter your email again to unlock.")
+        window.open(`https://innercirclesignal.substack.com/?utm_campaign=ai_index&email=${encodeURIComponent(emailToCheck)}`, "_blank")
       } else {
         setGateMessage("Something went wrong. Please try again.")
       }

@@ -1,30 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { supabase } from "@/app/lib/supabase"
 
-const SUBSTACK_URL = "https://innercirclesignal.substack.com"
-
-async function subscribeToSubstack(email: string): Promise<boolean> {
-  try {
-    const res = await fetch(`${SUBSTACK_URL}/api/v1/free`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email,
-        first_url: `${SUBSTACK_URL}/`,
-        first_referrer: "",
-        current_url: `${SUBSTACK_URL}/`,
-        current_referrer: "",
-        referral_code: "",
-        source: "embed",
-      }),
-    })
-    return res.ok
-  } catch {
-    console.error("Substack subscription failed for:", email)
-    return false
-  }
-}
-
 function isValidEmail(email: string): boolean {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   return re.test(email)
@@ -58,7 +34,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ status: "subscribed" })
       }
 
-      // Email exists but not verified yet: user is coming back after confirming on Substack
+      // Email exists but not verified: user is coming back after subscribing on Substack
       // Mark as verified and unlock
       await supabase
         .from("subscribers")
@@ -68,26 +44,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ status: "subscribed" })
     }
 
-    // Brand new email: save to DB + subscribe to Substack
-    const [insertResult, substackResult] = await Promise.all([
-      supabase
-        .from("subscribers")
-        .upsert(
-          { email: normalizedEmail, source: "ai_index", verified: false },
-          { onConflict: "email" }
-        ),
-      subscribeToSubstack(normalizedEmail),
-    ])
+    // Brand new email: save to DB as unverified
+    const { error: insertError } = await supabase
+      .from("subscribers")
+      .upsert(
+        { email: normalizedEmail, source: "ai_index", verified: false },
+        { onConflict: "email" }
+      )
 
-    if (insertResult.error) {
-      console.error("Supabase insert error:", insertResult.error)
+    if (insertError) {
+      console.error("Supabase insert error:", insertError)
       return NextResponse.json({ error: "Something went wrong" }, { status: 500 })
     }
 
-    return NextResponse.json({
-      status: "verification_pending",
-      substackSubscribed: substackResult,
-    })
+    return NextResponse.json({ status: "needs_substack" })
   } catch (error) {
     console.error("check-subscriber error:", error)
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 })
