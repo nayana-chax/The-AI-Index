@@ -244,6 +244,7 @@ export default function AIIndex() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
+            <img src="/logo.svg" alt="The AI Index" className="w-7 h-7" />
             <span className="font-[family-name:var(--font-display)] text-lg font-bold tracking-tight">The AI Index</span>
           </motion.div>
           <div className="flex items-center gap-3">
@@ -805,6 +806,7 @@ export default function AIIndex() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
   
+              <img src="/logo.svg" alt="The AI Index" className="w-6 h-6" />
               <span className="font-[family-name:var(--font-display)] font-bold">The AI Index</span>
             </div>
             <p className="text-sm text-muted-foreground text-center sm:text-right">
