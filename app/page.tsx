@@ -96,23 +96,26 @@ function StarRating({ rating }: { rating: number }) {
 
 function TickerBar() {
   const items = [
-    "The AI Index",
-    "5000+ AI Tools",
-    "Curated by The Signal",
-    "Updated Weekly",
-    "Free to Browse Top 150"
+    "Subscribe to The Signal",
+    "Weekly AI news that matters",
+    "Curated by Inner Circle",
+    "Free forever",
+    "Join 10,000+ readers"
   ]
-  
+
   return (
-    <motion.div 
-      className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-primary via-primary to-primary text-primary-foreground py-2.5 overflow-hidden z-50"
+    <motion.a
+      href="https://innercirclesignal.substack.com/?utm_campaign=ai_index_ticker"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-primary via-primary to-primary text-primary-foreground py-2.5 overflow-hidden z-50 cursor-pointer hover:brightness-110 transition-all group block"
       initial={{ y: 100 }}
       animate={{ y: 0 }}
       transition={{ delay: 1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
     >
       {/* Glow effect */}
       <div className="absolute inset-0 bg-gradient-to-t from-transparent to-foreground/5" />
-      
+
       <div className="ticker-wrapper relative">
         <div className="ticker-content">
           {[...Array(4)].map((_, i) => (
@@ -127,6 +130,10 @@ function TickerBar() {
           ))}
         </div>
       </div>
+      <span className="absolute right-4 top-1/2 -translate-y-1/2 hidden md:flex items-center gap-1.5 font-mono text-xs font-bold bg-foreground/10 group-hover:bg-foreground/20 px-3 py-1 rounded-full transition-colors backdrop-blur-sm">
+        Subscribe Free
+        <ChevronRight className="w-3 h-3" />
+      </span>
       <style jsx>{`
         .ticker-wrapper {
           display: flex;
@@ -141,7 +148,7 @@ function TickerBar() {
           100% { transform: translateX(-25%); }
         }
       `}</style>
-    </motion.div>
+    </motion.a>
   )
 }
 
